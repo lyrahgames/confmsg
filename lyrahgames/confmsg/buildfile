@@ -1,0 +1,6 @@
+./: exe{confmsg}: {hxx cxx}{**} ixx{configuration}
+{
+  test = true
+}
+
+ixx{configuration}: in{configuration}

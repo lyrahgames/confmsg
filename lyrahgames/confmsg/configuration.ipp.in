@@ -1,0 +1,4 @@
+static constexpr const char* config_file =
+    "$config.lyrahgames_confmsg.config.file_name$";
+static constexpr const char* config_subdir =
+    "$config.lyrahgames_confmsg.config.subdir$";

@@ -1,0 +1,7 @@
+project = lyrahgames-confmsg
+
+using version
+using config
+using test
+using install
+using dist

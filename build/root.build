@@ -1,0 +1,15 @@
+cxx.std = latest
+using cxx
+
+hxx{*}: extension = hpp
+cxx{*}: extension = cpp
+ixx{*}: extension = ipp
+
+test.target = $cxx.target
+
+cxx.poptions =+ "-I$out_root" "-I$src_root"
+
+using in
+
+[string] config.lyrahgames_confmsg.config.file_name =? "message.conf"
+[string] config.lyrahgames_confmsg.config.subdir =? "lyrahgames/confmsg"
