@@ -6,6 +6,8 @@
 !*.ipp
 !*.in
 
+!*.conf
+
 !manifest
 !bootstrap.build
 !root.build

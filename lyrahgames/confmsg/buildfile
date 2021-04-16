@@ -4,3 +4,9 @@
 }
 
 ixx{configuration}: in{configuration}
+
+./: file{system.message.conf}
+file{system.message.conf}@./: install = /etc/$config.lyrahgames_confmsg.config.subdir/$config.lyrahgames_confmsg.config.file_name
+
+./: file{user.message.conf}
+file{user.message.conf}@./: install = /etc/$config.lyrahgames_confmsg.config.subdir/
