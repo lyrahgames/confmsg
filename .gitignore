@@ -16,4 +16,8 @@
 !README.md
 !COPYING
 
+!.clang-format
+
+!.githooks/**
+!.gitattributes
 !.gitignore
