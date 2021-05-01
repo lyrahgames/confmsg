@@ -1,4 +1,4 @@
-project = lyrahgames-confmsg
+project = confmsg
 
 using version
 using config

@@ -11,5 +11,14 @@ cxx.poptions =+ "-I$out_root" "-I$src_root"
 
 using in
 
-config [string] config.lyrahgames_confmsg.config.file_name ?= "message.conf"
-config [string] config.lyrahgames_confmsg.config.subdir ?= "lyrahgames/confmsg"
+define conf: file
+conf{*}:
+{
+  extension = conf
+  install = "root/etc/$project/"
+}
+
+config [dir_path] config.confmsg.install.etc ?= \
+  $regex.replace($install.resolve($install.root)/etc, '\\', '\\\\')
+config [dir_path] config.confmsg.install.config ?= \
+  "$config.confmsg.install.etc/$project"

@@ -1,0 +1,23 @@
+#include <lyrahgames/confmsg/configuration.hpp>
+//
+
+using namespace std;
+
+namespace lyrahgames::confmsg {
+
+auto configuration::system_path() -> path {
+  return "$configuration_system_path$";
+}
+
+auto configuration::user_path() -> path {
+#ifdef __linux__
+  return user_home_path() / ".config/confmsg";
+#endif
+  return user_home_path();
+}
+
+auto configuration::local_path() -> path {
+  return filesystem::current_path() / ".confmsg";
+}
+
+}  // namespace lyrahgames::confmsg

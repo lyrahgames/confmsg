@@ -1,5 +1,5 @@
 : 1
-name: lyrahgames-confmsg
+name: confmsg
 version: 0.1.0-a.0.z
 project: lyrahgames
 summary: Program to print message in terminal that is given by configuration files

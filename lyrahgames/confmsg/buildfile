@@ -1,12 +1,19 @@
-./: exe{confmsg}: {hxx cxx}{**} ixx{configuration}
+./: exe{confmsg}: {hxx cxx}{** -configuration_paths*installed}
 {
   test = true
 }
 
-ixx{configuration}: in{configuration}
+exe{confmsg}: cxx{configuration_paths_uninstalled}: for_install = false
+cxx{configuration_paths_uninstalled}: in{configuration_paths}
+{
+  configuration_system_path = $src_root/etc
+}
 
-./: file{system.message.conf}
-file{system.message.conf}@./: install = /etc/$config.lyrahgames_confmsg.config.subdir/$config.lyrahgames_confmsg.config.file_name
-
-./: file{user.message.conf}
-file{user.message.conf}@./: install = /etc/$config.lyrahgames_confmsg.config.subdir/
+if ($install.root != [null])
+{
+  exe{confmsg}: cxx{configuration_paths_installed}: for_install = true
+  cxx{configuration_paths_installed}: in{configuration_paths}
+  {
+    configuration_system_path = $config.confmsg.install.config
+  }
+}

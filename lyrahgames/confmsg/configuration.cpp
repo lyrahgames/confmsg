@@ -1,5 +1,6 @@
 #include <lyrahgames/confmsg/configuration.hpp>
 //
+#include <array>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -16,7 +17,7 @@ using namespace std;
 
 namespace lyrahgames::confmsg {
 
-const char* configuration::user_home_dir() {
+std::filesystem::path user_home_path() {
 #ifdef __linux__
   auto result = getenv("HOME");
   if (!result) result = getpwuid(getuid())->pw_dir;
@@ -25,76 +26,54 @@ const char* configuration::user_home_dir() {
   return "";
 }
 
-string configuration::system_location() {
-  return string(system_config_dir) + "/" + config_subdir + "/" + config_file;
-}
+void configuration::parse(const path& p) {
+  if (!filesystem::is_regular_file(p))
+    throw runtime_error("Configuration file '" + string(p) +
+                        "' does not exist!");
 
-string configuration::user_location() {
-  return string(user_home_dir()) + "/" + user_config_dir + "/" + config_subdir +
-         "/" + config_file;
-}
-
-string configuration::hidden_directory_location() {
-  return string(".") + config_subdir + "/" + config_file;
-}
-
-string configuration::hidden_file_location() {
-  return string(".") + config_file;
-}
-
-string configuration::local_file_location() { return string(config_file); }
-
-vector<string> configuration::ordered_locations() {
-  vector<string> result = {
-      local_file_location(),        //
-      hidden_file_location(),       //
-      hidden_directory_location(),  //
-      user_location(),              //
-      system_location()             //
-  };
-  return result;
-}
-
-void configuration::parse(const string& file_path) {
-  fstream file{file_path, ios::in};
+  fstream file{p, ios::in};
   if (!file.is_open())
-    throw runtime_error("Failed to open configuration file '" + file_path +
+    throw runtime_error("Failed to open configuration file '" + string(p) +
                         "'!");
+
   getline(file, message);
+  location = p;
 }
 
 void configuration::load() {
-  auto locations = ordered_locations();
-  for (const auto& file_path : locations) {
-    if (!filesystem::is_regular_file(file_path)) continue;
+  array<path, 3> message_files = {local_path() / message_file_name,
+                                  user_path() / message_file_name,
+                                  system_path() / message_file_name};
+
+  for (const auto& file : message_files) {
     try {
-      parse(file_path);
+      parse(file);
     } catch (runtime_error& e) {
-      cerr << "Warning Configuration: " << e.what() << '\n';
+      cerr << "WARNING: " << e.what() << '\n';
       continue;
     }
-    location = file_path;
     return;
   }
-  cerr << "Warning Configuration: Failed to find configuration files. Fallback "
-          "to default configuration.\n";
+
+  cerr << "WARNING: Failed to find or parse configuration files. "
+          "Fallback to default configuration.\n";
 }
 
 configuration configuration::system() {
   configuration config{};
-  config.parse(system_location());
+  config.parse(system_path() / message_file_name);
   return config;
 }
 
 configuration configuration::user() {
   configuration config{};
-  config.parse(user_location());
+  config.parse(user_path() / message_file_name);
   return config;
 }
 
 configuration configuration::local() {
   configuration config{};
-  config.parse(local_file_location());
+  config.parse(local_path() / message_file_name);
   return config;
 }
 
